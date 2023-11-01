@@ -1,11 +1,11 @@
 const knex = require('knex')({
     client: 'mysql',
     connection: {
-      host : 'db4free.net',
-      port : 3306,
-      user : 'achonyerichard',
-      password : 'jahsehonfroy',
-      database : 'caro_app'
+      host : '127.0.0.1',
+      port : 	8889,
+      user : 'root',
+      password : 'root',
+      database : 'e-learning'
     },
     debug: true
   });
