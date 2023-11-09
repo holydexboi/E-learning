@@ -1,4 +1,3 @@
-const { customAlphabet } = require("nanoid");
 const { v4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -12,12 +11,18 @@ async function createUser(req, res) {
     return res.status(400).json({ message: "UserId is not define" });
   if (!req.body.password)
     return res.status(400).json({ message: "Password is not define" });
-  const { userId } = req.body;
+  if (!req.body.gender)
+    return res.status(400).json({ message: "Gender is not define" });
+    if (!req.body.location)
+    return res.status(400).json({ message: "Location is not define" });
+  if (!req.body.dob)
+    return res.status(400).json({ message: "Date of Birth is not define" });
+  const { userId, gender, dob, location} = req.body;
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(req.body.password, salt);
   try {
     const id = v4();
-    const user = await Users.createUser({ id, userId, password });
+    const user = await Users.createUser({ id, userId, password, dob, gender, location });
     const token = jwt.sign({ _id: userId }, config.get("jwtPrivateKey"));
     res
       .header("x-auth-token", token)
@@ -69,8 +74,6 @@ async function update(req, res) {
   const password = !req.body.password
     ? ""
     : await bcrypt.hash(req.body.password, salt);
-  const gender = req.body?.gender;
-  const dob = req.body?.dob;
   const profilePic = req.body?.profilePic;
   const grade = req.body?.grade;
   try {
@@ -79,8 +82,6 @@ async function update(req, res) {
       password,
       firstName,
       lastName,
-      gender,
-      dob,
       profilePic,
       grade,
     });

@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const config = require("config");
 const winston = require("winston");
+const fileupload = require('express-fileupload')
 require("express-async-errors");
 const error = require("./middleware/error");
 
@@ -15,7 +16,7 @@ var corsOptions = {
   origin: "*",
   optionsSuccessStatus: 200, // For legacy browser support
 };
-
+app.use(fileupload())
 app.use(cors(corsOptions));
 
 app.use(function (req, res, next) {
@@ -54,6 +55,11 @@ process.on("unhandledRejection", (ex) => {
 
 require("./routes/activation")(app);
 require("./routes/user")(app);
+require("./routes/subject")(app);
+require("./routes/grade")(app);
+require("./routes/instructor")(app);
+require("./routes/course")(app);
+require("./routes/lesson")(app);
 
 const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => {
