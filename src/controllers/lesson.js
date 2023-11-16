@@ -1,4 +1,5 @@
 const { v4 } = require("uuid");
+const { nanoid } = require("nanoid");
 const Lesson = require("../models/lesson");
 
 Lesson.createTable();
@@ -8,10 +9,23 @@ async function createLesson(req, res) {
     return res.status(400).json({ message: "Lesson name is not define" });
   if (!req.body.course)
     return res.status(400).json({ message: "Course Id is not define" });
-  if (!req.body.video)
+  if (!req.files)
     return res.status(400).json({ message: "Video file not uploaded" });
-
-  const { name, course, video } = req.body;
+  let video = "";
+  const file = req.files.video;
+  console.log(file)
+  if (file) {
+    const type = file.mimetype.split("/")[1];
+    video = nanoid() + "." + type;
+    file.mv("./uploads/videos/lesson/" + video + "." + type, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
+  const { name, course } = req.body;
 
   try {
     const id = v4();
@@ -89,7 +103,20 @@ async function updateLesson(req, res) {
   const lessonId = req.params.id;
   const name = req.body?.name;
   const course = req.body?.course;
-  const video = req.body?.video;
+  const file = req.files?.video;
+  let video = "";
+  console.log(file)
+  if (file) {
+    const type = file.mimetype.split("/")[1];
+    video = nanoid() + "." + type;
+    file.mv("./uploads/videos/lesson/" + video + "." + type, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
   try {
     const output = await Lesson.updateLesson({
       id: lessonId,

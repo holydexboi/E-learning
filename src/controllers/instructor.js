@@ -1,4 +1,5 @@
 const { v4 } = require("uuid");
+const { nanoid } = require("nanoid");
 const Instructor = require("../models/instructor");
 
 Instructor.createTable();
@@ -10,7 +11,19 @@ async function createInstuctor(req, res) {
     return res.status(400).json({ message: "Last Name is not define" });
   if (!req.body.gender)
     return res.status(400).json({ message: "Gender is not define" });
-
+  let profilePic = "";
+  const file = req.files?.profilePic;
+  if (file) {
+    const type = file.mimetype.split("/")[1];
+    profilePic = nanoid() + "." + type;
+    file.mv("./uploads/images/instructor/" + profilePic + "." + type, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
   const { firstName, lastName, gender } = req.body;
 
   try {
@@ -20,7 +33,7 @@ async function createInstuctor(req, res) {
       firstName,
       lastName,
       gender,
-      profilePic: req.body.profilePic,
+      profilePic,
     });
 
     res.json({ message: "Instructor created Successfully" });
@@ -73,7 +86,19 @@ async function updateInstructor(req, res) {
   const instructorId = req.params.id;
   const firstName = req.body?.firstName;
   const lastName = req.body?.lastName;
-  const profilePic = req.body?.profilePic;
+  const file = req.files?.profilePic;
+  let profilePic = "";
+  if (file) {
+    const type = file.mimetype.split("/")[1];
+    profilePic = nanoid() + "." + type;
+    file.mv("./uploads/images/instructor/" + profilePic + "." + type, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
   try {
     const output = await Instructor.updateInstructor({
       id: instructorId,
@@ -90,7 +115,7 @@ async function updateInstructor(req, res) {
     console.log(err);
     res.status(500).json({
       message: "Internal Error",
-      error: err,
+      error: err.message,
     });
   }
 }

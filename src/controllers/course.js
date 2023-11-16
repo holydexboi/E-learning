@@ -1,19 +1,35 @@
 const { v4 } = require("uuid");
+const { nanoid } = require("nanoid");
 const Course = require("../models/course");
 
 Course.createTable();
 
 async function createCourse(req, res) {
+  console.log(req.files);
+
   if (!req.body.subject)
     return res.status(400).json({ message: "Subject Id is not define" });
   if (!req.body.grade)
     return res.status(400).json({ message: "Grade is not define" });
-  if (!req.body.banner)
+  if (!req.files)
     return res.status(400).json({ message: "Course banner is not define" });
   if (!req.body.instructor)
     return res.status(400).json({ message: "Course instructor is not define" });
 
-  const { subject, grade, banner, instructor } = req.body;
+  const file = req.files.banner;
+  let banner = "";
+  if (file) {
+    const type = file.mimetype.split("/")[1];
+    banner = nanoid() + "." + type;
+    file.mv("./uploads/images/course/" + banner + "." + type, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
+  const { subject, grade, instructor } = req.body;
 
   try {
     const id = v4();
@@ -93,7 +109,19 @@ async function updateCourse(req, res) {
   const subject = req.body?.subject;
   const grade = req.body?.grade;
   const instructor = req.body?.instructor;
-  const banner = req.body?.banner;
+  const file = req.files?.banner;
+  let banner = "";
+  if (file) {
+    const type = file.mimetype.split("/")[1];
+    banner = nanoid() + "." + type;
+    file.mv("./uploads/images/course/" + banner + "." + type, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
   try {
     const output = await Course.updateCourse({
       id: courseId,
@@ -111,7 +139,7 @@ async function updateCourse(req, res) {
     console.log(err);
     res.status(500).json({
       message: "Internal Error",
-      error: err,
+      error: err.message,
     });
   }
 }

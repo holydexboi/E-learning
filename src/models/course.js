@@ -155,7 +155,7 @@ async function updateCourse(course) {
       instructor,
       banner,
     });
-    console.log(response);
+    
     return [{ subject, grade, instructor, banner }];
   } catch (err) {
     throw new Error(err);

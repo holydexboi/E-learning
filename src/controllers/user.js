@@ -1,5 +1,6 @@
 const { v4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const { nanoid } = require("nanoid");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const Users = require("../models/user");
@@ -13,16 +14,23 @@ async function createUser(req, res) {
     return res.status(400).json({ message: "Password is not define" });
   if (!req.body.gender)
     return res.status(400).json({ message: "Gender is not define" });
-    if (!req.body.location)
+  if (!req.body.location)
     return res.status(400).json({ message: "Location is not define" });
   if (!req.body.dob)
     return res.status(400).json({ message: "Date of Birth is not define" });
-  const { userId, gender, dob, location} = req.body;
+  const { userId, gender, dob, location } = req.body;
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(req.body.password, salt);
   try {
     const id = v4();
-    const user = await Users.createUser({ id, userId, password, dob, gender, location });
+    const user = await Users.createUser({
+      id,
+      userId,
+      password,
+      dob,
+      gender,
+      location,
+    });
     const token = jwt.sign({ _id: userId }, config.get("jwtPrivateKey"));
     res
       .header("x-auth-token", token)
@@ -74,8 +82,22 @@ async function update(req, res) {
   const password = !req.body.password
     ? ""
     : await bcrypt.hash(req.body.password, salt);
-  const profilePic = req.body?.profilePic;
+  const file = req.files?.profilePic;
   const grade = req.body?.grade;
+
+  let profilePic = "";
+  if (file) {
+    const type = file.mimetype.split("/")[1];
+    profilePic = nanoid() + "." + type;
+    file.mv("./uploads/images/user/" + profilePic + "." + type, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
+
   try {
     const output = await Users.update({
       userId,
