@@ -11,13 +11,13 @@ async function createLesson(req, res) {
     return res.status(400).json({ message: "Course Id is not define" });
   if (!req.files)
     return res.status(400).json({ message: "Video file not uploaded" });
-  let video = "";
+  let video = "/uploads/videos/lesson/";
   const file = req.files.video;
   console.log(file)
   if (file) {
     const type = file.mimetype.split("/")[1];
-    video = nanoid() + "." + type;
-    file.mv("./uploads/videos/lesson/" + video + "." + type, (err) => {
+    video += nanoid() + "." + type;
+    file.mv("." + video, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {
@@ -104,12 +104,12 @@ async function updateLesson(req, res) {
   const name = req.body?.name;
   const course = req.body?.course;
   const file = req.files?.video;
-  let video = "";
+  let video = "/uploads/videos/lesson/";
   console.log(file)
   if (file) {
     const type = file.mimetype.split("/")[1];
-    video = nanoid() + "." + type;
-    file.mv("./uploads/videos/lesson/" + video + "." + type, (err) => {
+    video += nanoid() + "." + type;
+    file.mv("." + video, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {

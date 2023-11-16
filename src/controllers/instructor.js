@@ -11,12 +11,12 @@ async function createInstuctor(req, res) {
     return res.status(400).json({ message: "Last Name is not define" });
   if (!req.body.gender)
     return res.status(400).json({ message: "Gender is not define" });
-  let profilePic = "";
+  let profilePic = "/uploads/images/instructor/";
   const file = req.files?.profilePic;
   if (file) {
     const type = file.mimetype.split("/")[1];
-    profilePic = nanoid() + "." + type;
-    file.mv("./uploads/images/instructor/" + profilePic + "." + type, (err) => {
+    profilePic += nanoid() + "." + type;
+    file.mv("." + profilePic, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {
@@ -87,11 +87,11 @@ async function updateInstructor(req, res) {
   const firstName = req.body?.firstName;
   const lastName = req.body?.lastName;
   const file = req.files?.profilePic;
-  let profilePic = "";
+  let profilePic = "/uploads/images/instructor/";
   if (file) {
     const type = file.mimetype.split("/")[1];
-    profilePic = nanoid() + "." + type;
-    file.mv("./uploads/images/instructor/" + profilePic + "." + type, (err) => {
+    profilePic += nanoid() + "." + type;
+    file.mv("." + profilePic, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {

@@ -85,11 +85,11 @@ async function update(req, res) {
   const file = req.files?.profilePic;
   const grade = req.body?.grade;
 
-  let profilePic = "";
+  let profilePic = "/uploads/images/user/";
   if (file) {
     const type = file.mimetype.split("/")[1];
-    profilePic = nanoid() + "." + type;
-    file.mv("./uploads/images/user/" + profilePic + "." + type, (err) => {
+    profilePic += nanoid() + "." + type;
+    file.mv("." + profilePic, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {

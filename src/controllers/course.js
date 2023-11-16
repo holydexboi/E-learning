@@ -17,11 +17,11 @@ async function createCourse(req, res) {
     return res.status(400).json({ message: "Course instructor is not define" });
 
   const file = req.files.banner;
-  let banner = "";
+  let banner = "/uploads/images/course/";
   if (file) {
     const type = file.mimetype.split("/")[1];
-    banner = nanoid() + "." + type;
-    file.mv("./uploads/images/course/" + banner + "." + type, (err) => {
+    banner += nanoid() + "." + type;
+    file.mv("." + banner, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {
@@ -110,11 +110,11 @@ async function updateCourse(req, res) {
   const grade = req.body?.grade;
   const instructor = req.body?.instructor;
   const file = req.files?.banner;
-  let banner = "";
+  let banner = "/uploads/images/course/";
   if (file) {
     const type = file.mimetype.split("/")[1];
-    banner = nanoid() + "." + type;
-    file.mv("./uploads/images/course/" + banner + "." + type, (err) => {
+    banner += nanoid() + "." + type;
+    file.mv("." + banner, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {
