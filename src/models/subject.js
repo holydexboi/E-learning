@@ -6,7 +6,7 @@ async function createTable() {
       if (!exists) {
         async function create() {
           await knex.schema
-            .withSchema("e-learning")
+            .withSchema("elearning")
             .createTable("subjects", function (table) {
               table.string("id").primary();
               table.string("title");
