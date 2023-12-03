@@ -15,6 +15,7 @@ async function createTable() {
               table.string("firstName");
               table.string("lastName");
               table.string("location");
+              table.boolean("isAdmin");
               table.enu("gender", ["male", "female"]);
               table.date("dob", { precision: 6 });
               table.string("grade");
@@ -55,6 +56,7 @@ async function signin(user) {
         "lastName",
         "gender",
         "grade",
+        "isAdmin",
         "location",
         "profilePic",
         "dob"

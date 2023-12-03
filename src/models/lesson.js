@@ -11,6 +11,9 @@ async function createTable() {
               table.string("id").primary();
               table.string("name");
               table.string("course");
+              table.string("description");
+              table.string("instructorName");
+              table.string("instructorPic");
               table.foreign("course").references("id").inTable("courses");
               table.string("video");
               table.float("duration");
@@ -39,8 +42,15 @@ async function createLesson(lesson) {
 
 async function getLessons() {
   try {
-    const output = await knex("lessons")
-      .select("id", "name", "video", "duration");
+    const output = await knex("lessons").select(
+      "id",
+      "name",
+      "video",
+      "duration",
+      "instructorName",
+      "description",
+      "instructorPic"
+    );
 
     return output;
   } catch (err) {
@@ -52,7 +62,15 @@ async function getLessonsByCourse(courseId) {
   try {
     const output = await knex("lessons")
       .where({ course: courseId })
-      .select("id", "name", "video", "duration");
+      .select(
+        "id",
+        "name",
+        "video",
+        "duration",
+        "instructorName",
+        "description",
+        "instructorPic"
+      );
 
     return output;
   } catch (err) {
@@ -64,7 +82,15 @@ async function getLessonsById(id) {
   try {
     const output = await knex("lessons")
       .where({ id })
-      .select("id", "name", "video", "duration");
+      .select(
+        "id",
+        "name",
+        "video",
+        "duration",
+        "instructorName",
+        "description",
+        "instructorPic"
+      );
 
     return output;
   } catch (err) {
@@ -76,21 +102,41 @@ async function updateLesson(lesson) {
   try {
     const output = await knex("lessons")
       .where({ id: lesson.id })
-      .select("id", "name", "course", "video", "duration");
+      .select(
+        "id",
+        "name",
+        "video",
+        "duration",
+        "instructorName",
+        "description",
+        "instructorPic"
+      );
 
     if (!output[0]) return output;
 
-    const name = !lesson.nname ? output.name : instructor.nname;
+    const name = !lesson.name ? output[0].name : lesson.name;
 
-    const course = !lesson.course ? output.course : lesson.course;
+    const course = !lesson.course ? output[0].course : lesson.course;
 
-    const video = !lesson.video ? output.video : lesson.video;
-    const duration = !lesson.duration ? output.duration : lesson.duration;
+    const video = !lesson.video ? output[0].video : lesson.video;
+    const duration = !lesson.duration ? output[0].duration : lesson.duration;
+    const instructorName = !lesson.instructorName
+      ? output[0].instructorName
+      : lesson.instructorName;
+    const description = !lesson.description
+      ? output[0].description
+      : lesson.description;
+    const instructorPic = !lesson.instructorPic
+      ? output[0].instructorPic
+      : lesson.instructorPic;
     const response = await knex("lessons").where("id", "=", lesson.id).update({
       name,
       course,
       video,
       duration,
+      description,
+      instructorName,
+      instructorPic,
     });
     console.log(response);
     return [
@@ -99,6 +145,9 @@ async function updateLesson(lesson) {
         course,
         video,
         duration,
+        description,
+        instructorName,
+        instructorPic,
       },
     ];
   } catch (err) {

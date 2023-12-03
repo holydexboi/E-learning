@@ -13,12 +13,7 @@ async function createTable() {
               table.foreign("subject").references("id").inTable("subjects");
               table.string("grade");
               table.foreign("grade").references("id").inTable("grades");
-              table.string("instructor");
               table.string("banner");
-              table
-                .foreign("instructor")
-                .references("id")
-                .inTable("instructors");
               table.integer("review").defaultTo(0);
               table.float("rate").defaultTo(0.0);
               table
@@ -49,7 +44,6 @@ async function getCourses() {
     const output = await knex("courses")
       .innerJoin("subjects", "courses.subject", "=", "subjects.id")
       .innerJoin("grades", "courses.grade", "=", "grades.id")
-      .innerJoin("instructors", "courses.instructor", "=", "instructors.id")
       .select({
         id: "courses.id",
         subject: "courses.subject",
@@ -57,12 +51,6 @@ async function getCourses() {
         subject_title: "subjects.title",
         grade: "courses.grade",
         level: "grades.level",
-        instructor: "courses.instructor",
-        instructor_firstName: "instructors.firstName",
-        instructor_lastName: "instructors.lastName",
-        instructor_rate: "instructors.rate",
-        instructor_review: "instructors.review",
-        instructor_profilePic: "instructors.profilePic",
         review: "courses.review",
         rate: "courses.rate",
       });
@@ -79,7 +67,6 @@ async function getCourseById(id) {
       .where({ "courses.id":id })
       .innerJoin("subjects", "courses.subject", "=", "subjects.id")
       .innerJoin("grades", "courses.grade", "=", "grades.id")
-      .innerJoin("instructors", "courses.instructor", "=", "instructors.id")
       .select({
         id: "courses.id",
         subject: "courses.subject",
@@ -87,12 +74,6 @@ async function getCourseById(id) {
         banner: "courses.banner",
         grade: "courses.grade",
         level: "grades.level",
-        instructor: "courses.instructor",
-        instructor_firstName: "instructors.firstName",
-        instructor_lastName: "instructors.lastName",
-        instructor_rate: "instructors.rate",
-        instructor_review: "instructors.review",
-        instructor_profilePic: "instructors.profilePic",
         review: "courses.review",
         rate: "courses.rate",
       });
@@ -109,7 +90,6 @@ async function getCourseByGrade(id) {
       .where({ grade: id })
       .innerJoin("subjects", "courses.subject", "=", "subjects.id")
       .innerJoin("grades", "courses.grade", "=", "grades.id")
-      .innerJoin("instructors", "courses.instructor", "=", "instructors.id")
       .select({
         id: "courses.id",
         subject: "courses.subject",
@@ -117,12 +97,6 @@ async function getCourseByGrade(id) {
         banner: "courses.banner",
         grade: "courses.grade",
         level: "grades.level",
-        instructor: "courses.instructor",
-        instructor_firstName: "instructors.firstName",
-        instructor_lastName: "instructors.lastName",
-        instructor_rate: "instructors.rate",
-        instructor_review: "instructors.review",
-        instructor_profilePic: "instructors.profilePic",
         review: "courses.review",
         rate: "courses.rate",
       });
@@ -137,26 +111,21 @@ async function updateCourse(course) {
   try {
     const output = await knex("courses")
       .where({ id: course.id })
-      .select("id", "subject", "grade", "instructor", "banner");
+      .select("id", "subject", "grade", "banner");
 
     if (!output[0]) return output;
 
-    const subject = !course.subject ? output.subject : instructor.subject;
+    const subject = !course.subject ? output.subject : course.subject;
 
     const grade = !course.grade ? output.grade : course.grade;
-
-    const instructor = !course.instructor
-      ? output.instructor
-      : course.instructor;
     const banner = !course.banner ? output.banner : course.banner;
     const response = await knex("courses").where("id", "=", course.id).update({
       subject,
       grade,
-      instructor,
       banner,
     });
     
-    return [{ subject, grade, instructor, banner }];
+    return [{ subject, grade, banner }];
   } catch (err) {
     throw new Error(err);
   }

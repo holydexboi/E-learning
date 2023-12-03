@@ -9,11 +9,17 @@ async function createLesson(req, res) {
     return res.status(400).json({ message: "Lesson name is not define" });
   if (!req.body.course)
     return res.status(400).json({ message: "Course Id is not define" });
+  if (!req.body.duration)
+    return res.status(400).json({ message: "Duration is not define" });
+  if (!req.body.description)
+    return res.status(400).json({ message: "Description is not define" });
+  if (!req.body.instructorName)
+    return res.status(400).json({ message: "Instructor Name is not define" });
   if (!req.files)
     return res.status(400).json({ message: "Video file not uploaded" });
   let video = "/uploads/videos/lesson/";
   const file = req.files.video;
-  console.log(file)
+  console.log(file);
   if (file) {
     const type = file.mimetype.split("/")[1];
     video += nanoid() + "." + type;
@@ -25,7 +31,21 @@ async function createLesson(req, res) {
       }
     });
   }
-  const { name, course } = req.body;
+
+  let instructorPic = "/uploads/images/instructor/";
+  const pic = req.files?.instructorPic;
+  if (pic) {
+    const type = pic.mimetype.split("/")[1];
+    instructorPic += nanoid() + "." + type;
+    file.mv("." + instructorPic, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
+  const { name, course, description, instructorName, duration } = req.body;
 
   try {
     const id = v4();
@@ -34,6 +54,10 @@ async function createLesson(req, res) {
       name,
       course,
       video,
+      description,
+      instructorName,
+      duration: parseFloat(duration),
+      instructorPic,
     });
 
     res.json({ message: "Lessons created Successfully" });
@@ -103,13 +127,30 @@ async function updateLesson(req, res) {
   const lessonId = req.params.id;
   const name = req.body?.name;
   const course = req.body?.course;
+  const duration = req.body?.duration;
+  const description = req.body?.description;
+  const instructorName = req.body?.instructorName;
   const file = req.files?.video;
   let video = "/uploads/videos/lesson/";
-  console.log(file)
+  console.log(file);
   if (file) {
     const type = file.mimetype.split("/")[1];
     video += nanoid() + "." + type;
     file.mv("." + video, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
+
+  let instructorPic = "/uploads/images/instructor/";
+  const pic = req.files?.instructorPic;
+  if (pic) {
+    const type = pic.mimetype.split("/")[1];
+    instructorPic += nanoid() + "." + type;
+    file.mv("." + instructorPic, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {
@@ -123,6 +164,10 @@ async function updateLesson(req, res) {
       name,
       course,
       video,
+      duration: parseFloat(duration),
+      instructorName,
+      instructorPic,
+      description
     });
 
     if (!output[0]) return res.status(400).json({ message: "Invalid Id" });

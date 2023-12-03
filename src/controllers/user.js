@@ -58,9 +58,9 @@ async function login(req, res) {
 
     const result = await bcrypt.compare(password, output[0].password);
     if (!result) return res.status(400).json({ message: "Invalid password" });
-
+    console.log(output[0]);
     const token = jwt.sign(
-      { _id: output[0].userId },
+      { _id: output[0].userId, isAdmin: output[0].isAdmin },
       config.get("jwtPrivateKey")
     );
 

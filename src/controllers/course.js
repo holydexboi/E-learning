@@ -13,8 +13,7 @@ async function createCourse(req, res) {
     return res.status(400).json({ message: "Grade is not define" });
   if (!req.files)
     return res.status(400).json({ message: "Course banner is not define" });
-  if (!req.body.instructor)
-    return res.status(400).json({ message: "Course instructor is not define" });
+  
 
   const file = req.files.banner;
   let banner = "/uploads/images/course/";
@@ -29,7 +28,7 @@ async function createCourse(req, res) {
       }
     });
   }
-  const { subject, grade, instructor } = req.body;
+  const { subject, grade } = req.body;
 
   try {
     const id = v4();
@@ -38,7 +37,6 @@ async function createCourse(req, res) {
       subject,
       grade,
       banner,
-      instructor,
     });
 
     res.json({ message: "Course created Successfully" });
@@ -108,7 +106,6 @@ async function updateCourse(req, res) {
   const courseId = req.params.id;
   const subject = req.body?.subject;
   const grade = req.body?.grade;
-  const instructor = req.body?.instructor;
   const file = req.files?.banner;
   let banner = "/uploads/images/course/";
   if (file) {
@@ -127,7 +124,6 @@ async function updateCourse(req, res) {
       id: courseId,
       subject,
       grade,
-      instructor,
       banner,
     });
 

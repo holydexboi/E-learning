@@ -1,5 +1,7 @@
 module.exports = (app) => {
   const instructor = require("../controllers/instructor");
+  const auth = require("../middleware/auth");
+  const admin = require("../middleware/admin")
   let router = require("express").Router();
 
   router.post("/instructor/create", instructor.createInstuctor);

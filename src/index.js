@@ -2,15 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const config = require("config");
 const winston = require("winston");
-const fileupload = require('express-fileupload')
+const fileupload = require("express-fileupload");
 require("express-async-errors");
 const error = require("./middleware/error");
 
 const app = express();
 
 app.use(express.json());
-app.use('/uploads', express.static('uploads'))
-app.use('/images', express.static('images'))
+app.use("/uploads", express.static("uploads"));
+app.use("/images", express.static("images"));
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -18,7 +18,7 @@ var corsOptions = {
   origin: "*",
   optionsSuccessStatus: 200, // For legacy browser support
 };
-app.use(fileupload())
+app.use(fileupload());
 app.use(cors(corsOptions));
 
 app.use(function (req, res, next) {
@@ -62,6 +62,9 @@ require("./routes/grade")(app);
 require("./routes/instructor")(app);
 require("./routes/course")(app);
 require("./routes/lesson")(app);
+require("./routes/registerCourse")(app);
+require("./routes/test")(app);
+require("./routes/userTest")(app);
 
 const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => {
