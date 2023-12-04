@@ -45,6 +45,40 @@ async function createUser(req, res) {
   }
 }
 
+async function createAdmin(req, res) {
+  if (!req.body.userId)
+    return res.status(400).json({ message: "UserId is not define" });
+  if (!req.body.password)
+    return res.status(400).json({ message: "Password is not define" });
+
+  const { userId } = req.body;
+  const salt = await bcrypt.genSalt(10);
+  const password = await bcrypt.hash(req.body.password, salt);
+  try {
+    const id = v4();
+    const user = await Users.createAdmin({
+      id,
+      userId,
+      password,
+      isAdmin: true,
+    });
+    const token = jwt.sign(
+      { _id: userId, isAdmin: true },
+      config.get("jwtPrivateKey")
+    );
+    res
+      .header("x-auth-token", token)
+      .header("access-control-expose-headers", "x-auth-token")
+      .json({ message: "User account created Successfully" });
+  } catch (err) {
+    console.log("err", err.message);
+    res.status(500).json({
+      message: "Internal Error",
+      error: err.message,
+    });
+  }
+}
+
 async function login(req, res) {
   if (!req.body.userId)
     return res.status(400).json({ message: "UserId is not define" });
@@ -124,4 +158,5 @@ module.exports = {
   createUser,
   login,
   update,
+  createAdmin
 };

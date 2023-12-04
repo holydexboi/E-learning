@@ -44,6 +44,16 @@ async function createUser(user) {
   }
 }
 
+async function createAdmin(user) {
+  try {
+    const id = await knex("users").insert(user);
+
+    return id;
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
 async function signin(user) {
   try {
     const output = await knex("users")
@@ -110,4 +120,4 @@ async function update(user) {
   }
 }
 
-module.exports = { createTable, createUser, signin, update };
+module.exports = { createTable, createUser, signin, update, createAdmin};
