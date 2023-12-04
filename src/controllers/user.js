@@ -46,19 +46,21 @@ async function createUser(req, res) {
 }
 
 async function createAdmin(req, res) {
-  if (!req.body.userId)
-    return res.status(400).json({ message: "UserId is not define" });
+  if (!req.body.email)
+    return res.status(400).json({ message: "Email is not define" });
   if (!req.body.password)
     return res.status(400).json({ message: "Password is not define" });
 
-  const { userId } = req.body;
+  const { email } = req.body;
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(req.body.password, salt);
+  const userId = 455447
   try {
     const id = v4();
     const user = await Users.createAdmin({
       id,
-      userId,
+      email,
+      userId: 455447,
       password,
       isAdmin: true,
     });
@@ -95,6 +97,35 @@ async function login(req, res) {
     console.log(output[0]);
     const token = jwt.sign(
       { _id: output[0].userId, isAdmin: output[0].isAdmin },
+      config.get("jwtPrivateKey")
+    );
+
+    res.json({ token, ...output[0] });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Internal Error",
+      error: err,
+    });
+  }
+}
+
+async function loginAdmin(req, res) {
+  if (!req.body.email)
+    return res.status(400).json({ message: "Email is not define" });
+  if (!req.body.password)
+    return res.status(400).json({ message: "Password is not define" });
+  const { email, password } = req.body;
+  try {
+    const output = await Users.signinAdmin({ email, password });
+
+    if (!output[0]) return res.status(400).json({ message: "Invalid Email" });
+
+    const result = await bcrypt.compare(password, output[0].password);
+    if (!result) return res.status(400).json({ message: "Invalid password" });
+    console.log(output[0]);
+    const token = jwt.sign(
+      { _id: output[0].userId, isAdmin: true },
       config.get("jwtPrivateKey")
     );
 
@@ -158,5 +189,6 @@ module.exports = {
   createUser,
   login,
   update,
-  createAdmin
+  createAdmin,
+  loginAdmin
 };
