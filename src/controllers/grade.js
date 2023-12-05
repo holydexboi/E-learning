@@ -49,10 +49,7 @@ async function getGrades(req, res) {
   try {
     const output = await Grades.getGrades();
 
-    if (!output[0])
-      return res.status(400).json({ message: "No Grades in the database" });
-
-    res.json({ ...output });
+    res.json([...output]);
   } catch (err) {
     console.log(err);
     res.status(500).json({

@@ -18,7 +18,7 @@ async function takeTest(req, res) {
       user,
       lesson,
       score: 0.0,
-      tests: ""
+      tests: "",
     });
     res.json({ message: "Registered test Successfully", data: user_test });
   } catch (err) {
@@ -28,20 +28,14 @@ async function takeTest(req, res) {
       error: err.message,
     });
   }
-
-  
 }
 
 async function getUserTest(req, res) {
   const userId = req.user?._id;
   try {
     const user_test = await UserTest.getUserTest(userId);
-    if (!user_test[0])
-      return res
-        .status(400)
-        .json({ message: "User has no Test in the database" });
 
-    res.json([ ...user_test ]);
+    res.json([...user_test]);
   } catch (err) {
     console.log("err", err.message);
     res.status(500).json({

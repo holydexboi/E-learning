@@ -38,12 +38,8 @@ async function getUserCourse(req, res) {
   const userId = req.user?._id;
   try {
     const user_course = await UserCourse.getRegisterCourse(userId);
-    if (!user_course[0])
-      return res
-        .status(400)
-        .json({ message: "User has no Course in the database" });
 
-    res.json({ ...user_course });
+    res.json([...user_course]);
   } catch (err) {
     console.log("err", err.message);
     res.status(500).json({

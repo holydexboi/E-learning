@@ -13,7 +13,6 @@ async function createCourse(req, res) {
     return res.status(400).json({ message: "Grade is not define" });
   if (!req.files)
     return res.status(400).json({ message: "Course banner is not define" });
-  
 
   const file = req.files.banner;
   let banner = "/uploads/images/course/";
@@ -53,10 +52,7 @@ async function getCourses(req, res) {
   try {
     const output = await Course.getCourses();
 
-    if (!output[0])
-      return res.status(400).json({ message: "No Course in the database" });
-
-    res.json({ ...output });
+    res.json([...output]);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -87,12 +83,7 @@ async function getCourseByGrade(req, res) {
   try {
     const output = await Course.getCourseByGrade(req.params.id);
 
-    if (!output[0])
-      return res
-        .status(400)
-        .json({ message: "No Course with the given Grade Id" });
-
-    res.json({ ...output });
+    res.json([...output]);
   } catch (err) {
     console.log(err);
     res.status(500).json({

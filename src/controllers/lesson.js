@@ -74,10 +74,7 @@ async function getLessons(req, res) {
   try {
     const output = await Lesson.getLessons();
 
-    if (!output[0])
-      return res.status(400).json({ message: "No Lesson in the database" });
-
-    res.json({ ...output });
+    res.json([...output]);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -108,12 +105,7 @@ async function getLessonByCourse(req, res) {
   try {
     const output = await Lesson.getLessonsByCourse(req.params.id);
 
-    if (!output[0])
-      return res
-        .status(400)
-        .json({ message: "No Lesson with the given Course Id" });
-
-    res.json({ ...output });
+    res.json([...output]);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -167,7 +159,7 @@ async function updateLesson(req, res) {
       duration: parseFloat(duration),
       instructorName,
       instructorPic,
-      description
+      description,
     });
 
     if (!output[0]) return res.status(400).json({ message: "Invalid Id" });

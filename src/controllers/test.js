@@ -42,10 +42,7 @@ async function getTests(req, res) {
   try {
     const output = await Test.getTests();
 
-    if (!output[0])
-      return res.status(400).json({ message: "No Test in the database" });
-
-    res.json({ ...output });
+    res.json([...output]);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -56,23 +53,18 @@ async function getTests(req, res) {
 }
 
 async function getAvailableTests(req, res) {
-    try {
-      const output = await Test.getAvailableTests();
-  
-      if (!output[0])
-        return res.status(400).json({ message: "No Test in the database" });
-  
-      res.json([ ...output ]);
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        message: "Internal Error",
-        error: err,
-      });
-    }
+  try {
+    const output = await Test.getAvailableTests();
+
+    res.json([...output]);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Internal Error",
+      error: err,
+    });
   }
-
-
+}
 
 async function getTestById(req, res) {
   try {
@@ -95,12 +87,7 @@ async function getTestByLesson(req, res) {
   try {
     const output = await Test.getTestByLesson(req.params.id);
 
-    if (!output[0])
-      return res
-        .status(400)
-        .json({ message: "No Test with the given Lesson Id" });
-
-    res.json({ ...output });
+    res.json([...output]);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -149,5 +136,5 @@ module.exports = {
   getTestById,
   getTestByLesson,
   updateTest,
-  getAvailableTests
+  getAvailableTests,
 };
