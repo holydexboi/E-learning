@@ -65,6 +65,7 @@ require("./routes/lesson")(app);
 require("./routes/registerCourse")(app);
 require("./routes/test")(app);
 require("./routes/userTest")(app);
+require("./routes/dashboard")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

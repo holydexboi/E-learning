@@ -16,7 +16,7 @@ async function createTable() {
               table.string("lastName");
               table.string("location");
               table.boolean("isAdmin");
-              table.string("email")
+              table.string("email");
               table.enu("gender", ["male", "female"]);
               table.date("dob", { precision: 6 });
               table.string("grade");
@@ -104,6 +104,39 @@ async function signinAdmin(user) {
   }
 }
 
+async function getStudents() {
+  try {
+    const output = await knex("users").select(
+      "id",
+      "userId",
+      "password",
+      "firstName",
+      "lastName",
+      "gender",
+      "grade",
+      "isAdmin",
+      "email",
+      "location",
+      "profilePic",
+      "dob"
+    );
+
+    return output;
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
+async function getStudentsCount() {
+  try {
+    const output = await knex("users").count();
+
+    return output;
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
 async function update(user) {
   try {
     const output = await knex("users")
@@ -146,4 +179,13 @@ async function update(user) {
   }
 }
 
-module.exports = { createTable, createUser, signin, update, createAdmin, signinAdmin};
+module.exports = {
+  createTable,
+  createUser,
+  signin,
+  update,
+  createAdmin,
+  signinAdmin,
+  getStudents,
+  getStudentsCount,
+};

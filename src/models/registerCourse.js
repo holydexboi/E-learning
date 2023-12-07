@@ -59,14 +59,32 @@ async function getRegisterCourse(userId) {
   }
 }
 
+async function getUserPerCourseCount() {
+  try {
+    const output = await knex("usercourses")
+      .innerJoin("courses", "usercourses.course", "=", "courses.id")
+      .innerJoin("subjects", "courses.subject", "=", "subjects.id")
+      .innerJoin("grades", "courses.grade", "=", "grades.id")
+      .select({
+        courser_id: "usercourses.course",
+        subject: "subjects.title",
+        grade: "grades.level"
+      })
+      .count('user')
+      .groupBy('course')
+
+    return output;
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
 async function removeCourse(id) {
   const output = await knex("usercourses").where({ id }).select();
 
   if (!output[0]) return output;
 
-  const response = await knex("usercourses")
-    .where("id", "=", id)
-    .delete();
+  const response = await knex("usercourses").where("id", "=", id).delete();
 
   return [output[0]];
 }
@@ -78,24 +96,29 @@ async function updateProgress(userCourse) {
       .select("id", "user", "course", "progress", "lessons", "status");
 
     if (!output[0]) return output;
-    console.log("lesson", output[0].lessons)
+    console.log("lesson", output[0].lessons);
     let lessonArray = output[0].lessons.split(",");
     const courseLessons = await knex("lessons")
       .where({ course: userCourse.course })
       .select("id");
 
     const check = lessonArray.includes(userCourse.lessonId);
-    
+
     let newLesson = "";
     if (!check) {
-      newLesson =  output[0].lessons !== "" ? output[0].lessons + "," + userCourse.lessonId.trim() : userCourse.lessonId.trim();
+      newLesson =
+        output[0].lessons !== ""
+          ? output[0].lessons + "," + userCourse.lessonId.trim()
+          : userCourse.lessonId.trim();
       lessonArray = newLesson.split(",");
-      
-      const lessonArrayLength = lessonArray.length <= 1 ? 1 : lessonArray.length
-      const progress =
-        Math.round((lessonArrayLength / courseLessons.length) * 100);
 
-        console.log(courseLessons.length)
+      const lessonArrayLength =
+        lessonArray.length <= 1 ? 1 : lessonArray.length;
+      const progress = Math.round(
+        (lessonArrayLength / courseLessons.length) * 100
+      );
+
+      console.log(courseLessons.length);
 
       const response = await knex("usercourses")
         .where("id", "=", output[0].id)
@@ -106,7 +129,7 @@ async function updateProgress(userCourse) {
 
       return [{ progress }];
     }
-    console.log("lesson", output[0])
+    console.log("lesson", output[0]);
     return [{ ...output[0].progress }];
   } catch (err) {
     throw new Error(err);
@@ -119,4 +142,5 @@ module.exports = {
   getRegisterCourse,
   removeCourse,
   updateProgress,
+  getUserPerCourseCount
 };
