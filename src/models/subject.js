@@ -46,7 +46,7 @@ async function getSubject() {
 
 async function getSubjectCount() {
   try {
-    const output = await knex("subjects").count("id");
+    const output = await knex("subjects").count();
 
     return output;
   } catch (err) {

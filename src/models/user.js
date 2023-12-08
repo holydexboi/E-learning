@@ -129,7 +129,7 @@ async function getStudents() {
 
 async function getStudentsCount() {
   try {
-    const output = await knex("users").count();
+    const output = await knex("users").count().where({isAdmin: 0});
 
     return output;
   } catch (err) {

@@ -43,6 +43,16 @@ async function getGrades() {
     throw new Error(err);
   }
 }
+async function getGradesCount() {
+  try {
+    const output = await knex("grades")
+      .count();
+
+    return output;
+  } catch (err) {
+    throw new Error(err);
+  }
+}
 
 async function getGradeById(id) {
   try {
@@ -74,4 +84,5 @@ module.exports = {
   updateGrade,
   getGradeById,
   getGrades,
+  getGradesCount
 };
