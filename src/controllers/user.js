@@ -1,32 +1,31 @@
 const { v4 } = require("uuid");
 const bcrypt = require("bcrypt");
-const { nanoid } = require("nanoid");
+const { customAlphabet, nanoid } = require("nanoid");
+const userIdentifier = customAlphabet("1234567890", 7);
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const Users = require("../models/user");
+const { activateUser } = require("../models/activation");
 
 Users.createTable();
 
 async function createUser(req, res) {
-  if (!req.body.userId)
-    return res.status(400).json({ message: "UserId is not define" });
-  if (!req.body.password)
-    return res.status(400).json({ message: "Password is not define" });
   if (!req.body.gender)
     return res.status(400).json({ message: "Gender is not define" });
   if (!req.body.location)
     return res.status(400).json({ message: "Location is not define" });
   if (!req.body.dob)
     return res.status(400).json({ message: "Date of Birth is not define" });
-  const { userId, gender, dob, location } = req.body;
-  const salt = await bcrypt.genSalt(10);
-  const password = await bcrypt.hash(req.body.password, salt);
+  const { gender, dob, location } = req.body;
+
   try {
     const id = v4();
+    const userId = userIdentifier();
+    const code = nanoid(6).toLowerCase();
     const user = await Users.createUser({
       id,
       userId,
-      password,
+      code,
       dob,
       gender,
       location,
@@ -35,7 +34,10 @@ async function createUser(req, res) {
     res
       .header("x-auth-token", token)
       .header("access-control-expose-headers", "x-auth-token")
-      .json({ message: "User account created Successfully" });
+      .json({
+        message: "User account created Successfully",
+        data: { userId, code },
+      });
   } catch (err) {
     console.log("err", err.message);
     res.status(500).json({
@@ -54,7 +56,7 @@ async function createAdmin(req, res) {
   const { email } = req.body;
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(req.body.password, salt);
-  const userId = 455447
+  const userId = 455447;
   try {
     const id = v4();
     const user = await Users.createAdmin({
@@ -83,18 +85,15 @@ async function createAdmin(req, res) {
 
 async function login(req, res) {
   if (!req.body.userId)
-    return res.status(400).json({ message: "UserId is not define" });
-  if (!req.body.password)
-    return res.status(400).json({ message: "Password is not define" });
-  const { userId, password } = req.body;
+    return res.status(400).json({ message: "User is not define" });
+  if (!req.body.code)
+    return res.status(400).json({ message: "Activation Code is not define" });
+  const { userId, code } = req.body;
   try {
-    const output = await Users.signin({ userId, password });
+  
+    const output = await Users.signin({userId, code})
 
-    if (!output[0]) return res.status(400).json({ message: "Invalid userId" });
-
-    const result = await bcrypt.compare(password, output[0].password);
-    if (!result) return res.status(400).json({ message: "Invalid password" });
-    console.log(output[0]);
+    if (!output[0]) return res.status(400).json({ message: "Invalid Email or code" });
     const token = jwt.sign(
       { _id: output[0].userId, isAdmin: output[0].isAdmin },
       config.get("jwtPrivateKey")
@@ -190,5 +189,5 @@ module.exports = {
   login,
   update,
   createAdmin,
-  loginAdmin
+  loginAdmin,
 };

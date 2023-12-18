@@ -12,6 +12,7 @@ async function createTable() {
               table.string("userId");
               table.unique("userId");
               table.string("password");
+              table.string("code");
               table.string("firstName");
               table.string("lastName");
               table.string("location");
@@ -58,13 +59,13 @@ async function createAdmin(user) {
 async function signin(user) {
   try {
     const output = await knex("users")
-      .where({ userId: user.userId })
+      .where({ userId: user.userId, code: user.code })
       .select(
         "id",
         "userId",
-        "password",
         "firstName",
         "lastName",
+        "code",
         "gender",
         "grade",
         "isAdmin",
@@ -129,7 +130,7 @@ async function getStudents() {
 
 async function getStudentsCount() {
   try {
-    const output = await knex("users").count().where({isAdmin: 0});
+    const output = await knex("users").count().where({ isAdmin: 0 });
 
     return output;
   } catch (err) {
