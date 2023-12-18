@@ -37,7 +37,7 @@ async function createLesson(req, res) {
   if (pic) {
     const type = pic.mimetype.split("/")[1];
     instructorPic += nanoid() + "." + type;
-    file.mv("." + instructorPic, (err) => {
+    pic.mv("." + instructorPic, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {

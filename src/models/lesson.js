@@ -42,15 +42,21 @@ async function createLesson(lesson) {
 
 async function getLessons() {
   try {
-    const output = await knex("lessons").select(
-      "id",
-      "name",
-      "video",
-      "duration",
-      "instructorName",
-      "description",
-      "instructorPic"
-    );
+    const output = await knex("lessons")
+.innerJoin("courses", "lessons.course", "=", "courses.id")
+.innerJoin("subjects", "subjects.id", "=", "courses.subject")
+.innerJoin("grades", "grades.id", "=", "courses.grade")
+.select({
+      id: "lessons.id",
+      name: "lessons.name",
+      video: "lessons.video",
+      duration: "lessons.duration",
+      instructorName: "lessons.instructorName",
+      description: "lessons.description",
+      instructorPic: "lessons.instructorPic",
+subject: "subjects.title",
+grade: "grades.level"
+    });
 
     return output;
   } catch (err) {
@@ -62,15 +68,20 @@ async function getLessonsByCourse(courseId) {
   try {
     const output = await knex("lessons")
       .where({ course: courseId })
-      .select(
-        "id",
-        "name",
-        "video",
-        "duration",
-        "instructorName",
-        "description",
-        "instructorPic"
-      );
+.innerJoin("courses", "lessons.course", "=", "courses.id")
+.innerJoin("subjects", "subjects.id", "=", "courses.subject")
+.innerJoin("grades", "grades.id", "=", "courses.grade")
+.select({
+      id: "lessons.id",
+      name: "lessons.name",
+      video: "lessons.video",
+      duration: "lessons.duration",
+      instructorName: "lessons.instructorName",
+      description: "lessons.description",
+      instructorPic: "lessons.instructorPic",
+subject: "subjects.title",
+grade: "grades.level"
+     })
 
     return output;
   } catch (err) {
@@ -82,15 +93,20 @@ async function getLessonsById(id) {
   try {
     const output = await knex("lessons")
       .where({ id })
-      .select(
-        "id",
-        "name",
-        "video",
-        "duration",
-        "instructorName",
-        "description",
-        "instructorPic"
-      );
+.innerJoin("courses", "lessons.course", "=", "courses.id")
+.innerJoin("subjects", "subjects.id", "=", "courses.subject")
+.innerJoin("grades", "grades.id", "=", "courses.grade")
+.select({
+      id: "lessons.id",
+      name: "lessons.name",
+      video: "lessons.video",
+      duration: "lessons.duration",
+      instructorName: "lessons.instructorName",
+      description: "lessons.description",
+      instructorPic: "lessons.instructorPic",
+subject: "subjects.title",
+grade: "grades.level"
+      })
 
     return output;
   } catch (err) {
@@ -102,15 +118,20 @@ async function updateLesson(lesson) {
   try {
     const output = await knex("lessons")
       .where({ id: lesson.id })
-      .select(
-        "id",
-        "name",
-        "video",
-        "duration",
-        "instructorName",
-        "description",
-        "instructorPic"
-      );
+.innerJoin("courses", "lessons.course", "=", "courses.id")
+.innerJoin("subjects", "subjects.id", "=", "courses.subject")
+.innerJoin("grades", "grades.id", "=", "courses.grade")
+.select({
+      id: "lessons.id",
+      name: "lessons.name",
+      video: "lessons.video",
+      duration: "lessons.duration",
+      instructorName: "lessons.instructorName",
+      description: "lessons.description",
+      instructorPic: "lessons.instructorPic",
+subject: "subjects.title",
+grade: "grades.level"
+      })
 
     if (!output[0]) return output;
 

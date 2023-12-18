@@ -134,7 +134,7 @@ async function loginAdmin(req, res) {
     console.log(err);
     res.status(500).json({
       message: "Internal Error",
-      error: err,
+      error: err.message,
     });
   }
 }
