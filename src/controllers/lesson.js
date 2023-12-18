@@ -15,8 +15,7 @@ async function createLesson(req, res) {
     return res.status(400).json({ message: "Description is not define" });
   if (!req.body.instructorName)
     return res.status(400).json({ message: "Instructor Name is not define" });
-  if (!req.files)
-    return res.status(400).json({ message: "Video file not uploaded" });
+  
   let video = "/uploads/videos/lesson/";
   const file = req.files.video;
   console.log(file);
@@ -30,6 +29,9 @@ async function createLesson(req, res) {
         console.log("File  uploadeded successfully");
       }
     });
+  }
+  else{
+    video = null
   }
 
   let instructorPic = "/uploads/images/instructor/";
