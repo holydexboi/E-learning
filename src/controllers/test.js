@@ -4,6 +4,9 @@ const Test = require("../models/test");
 
 Test.createTable();
 
+async function check(req, res) {
+  res.send();
+}
 async function createTest(req, res) {
   if (!req.body.lesson)
     return res.status(400).json({ message: "Lesson Id is not define" });
@@ -41,10 +44,15 @@ async function createTest(req, res) {
 async function getTests(req, res) {
   try {
     const output = await Test.getTests();
-output?.map(test => {
-test.options = { a: test?.optionA, b: test?.optionB, c: test?.optionC, d: test?.optionD }
-return test
-})
+    output?.map((test) => {
+      test.options = {
+        a: test?.optionA,
+        b: test?.optionB,
+        c: test?.optionC,
+        d: test?.optionD,
+      };
+      return test;
+    });
     res.json([...output]);
   } catch (err) {
     console.log(err);
@@ -58,11 +66,15 @@ return test
 async function getAvailableTests(req, res) {
   try {
     const output = await Test.getAvailableTests();
-output?.map(test => {
-test.options = { a: test?.optionA, b: test?.optionB, c: test?.optionC, d: test?.optionD}
-return test
-
-})
+    output?.map((test) => {
+      test.options = {
+        a: test?.optionA,
+        b: test?.optionB,
+        c: test?.optionC,
+        d: test?.optionD,
+      };
+      return test;
+    });
     res.json([...output]);
   } catch (err) {
     console.log(err);
@@ -76,7 +88,12 @@ return test
 async function getTestById(req, res) {
   try {
     const output = await Test.getTestById(req.params.id);
-output.options = { a: output?.optionA, b: output?.optionB, c: output?.optionC, d: output?.optionD}
+    output.options = {
+      a: output?.optionA,
+      b: output?.optionB,
+      c: output?.optionC,
+      d: output?.optionD,
+    };
 
     if (!output[0])
       return res.status(400).json({ message: "No Test with the given Id" });
@@ -94,11 +111,15 @@ output.options = { a: output?.optionA, b: output?.optionB, c: output?.optionC, d
 async function getTestByLesson(req, res) {
   try {
     const output = await Test.getTestByLesson(req.params.id);
-output?.map(test => {
-test.options = { a: test?.optionA, b: test?.optionB, c: test?.optionC, d: test?.optionD}
-return test
-
-})
+    output?.map((test) => {
+      test.options = {
+        a: test?.optionA,
+        b: test?.optionB,
+        c: test?.optionC,
+        d: test?.optionD,
+      };
+      return test;
+    });
     res.json([...output]);
   } catch (err) {
     console.log(err);
@@ -149,4 +170,5 @@ module.exports = {
   getTestByLesson,
   updateTest,
   getAvailableTests,
+  check,
 };
