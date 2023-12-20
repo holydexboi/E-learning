@@ -1,10 +1,10 @@
 const knex = require('knex')({
   client: 'mysql',
   connection: {
-    host : '65.20.102.32',
+    host : '127.0.0.1',
     port : 	3306,
-    user : 'dhulqev',
-    password : 'learn',
+    user : 'learn',
+    password : 'Learn123',
     database : 'elearning',
 insecureAuth : true
   },
