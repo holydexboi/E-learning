@@ -40,7 +40,7 @@ async function activateUser(req, res) {
   if (!req.body.code)
     return res.status(400).json({ message: "Code not define" });
   const code = req.body.code;
-  const userId = req.user._id
+  
   try {
     const output = await Activation.activateUser(code);
 
