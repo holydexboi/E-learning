@@ -6,6 +6,6 @@ module.exports = (app) => {
 
   router.post("/activation/generate", [auth, admin], activation.generateCode);
   router.get("/activation/codes", [auth, admin], activation.getActivationCodes);
-  router.post("/activation/activate", auth, activation.activateUser);
+  router.post("/activation/activate", activation.activateUser);
   app.use("/api", router);
 };
