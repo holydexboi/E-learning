@@ -13,11 +13,11 @@ app.use("/images", express.static("images"));
 
 app.use(express.urlencoded({ extended: true }));
 
+app.use(fileupload());
 var corsOptions = {
   origin: "*",
   optionsSuccessStatus: 200, // For legacy browser support
 };
-app.use(fileupload());
 app.use(cors(corsOptions));
 
 app.use(function (req, res, next) {

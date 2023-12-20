@@ -1,6 +1,7 @@
 const { v4 } = require("uuid");
 const { nanoid } = require("nanoid");
 const Course = require("../models/course");
+const path = require("path");
 
 Course.createTable();
 
@@ -15,11 +16,11 @@ async function createCourse(req, res) {
     return res.status(400).json({ message: "Course banner is not define" });
 
   const file = req.files.banner;
-  let banner = "/uploads/images/course/";
+  let banner = __dirname + "/uploads/images/course/";
   if (file) {
     const type = file.mimetype.split("/")[1];
     banner += nanoid() + "." + type;
-    file.mv("." + banner, (err) => {
+   await file.mv(path.join(path.dirname('/E-learning/src/','/uploads/images/course') + nanoid() + "." + type), (err) => {
       if (err) {
        console.log(err)
       } else {
