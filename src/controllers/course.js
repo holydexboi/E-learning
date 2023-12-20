@@ -21,7 +21,7 @@ async function createCourse(req, res) {
     banner += nanoid() + "." + type;
     file.mv("." + banner, (err) => {
       if (err) {
-        res.status(400).json({ message: err });
+       console.log(err)
       } else {
         console.log("File  uploadeded successfully");
       }

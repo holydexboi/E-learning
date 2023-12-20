@@ -1,7 +1,6 @@
 const { v4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const config = require("config");
 const Subjects = require("../models/subject");
 
 Subjects.createTable();

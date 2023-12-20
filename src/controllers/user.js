@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const { customAlphabet, nanoid } = require("nanoid");
 const userIdentifier = customAlphabet("1234567890", 7);
 const jwt = require("jsonwebtoken");
-const config = require("config");
 const Users = require("../models/user");
 const { activateUser } = require("../models/activation");
 

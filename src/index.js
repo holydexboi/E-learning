@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const config = require("config");
 const winston = require("winston");
 const fileupload = require("express-fileupload");
 require("express-async-errors");
