@@ -99,10 +99,7 @@ async function login(req, res) {
     const output = await Users.signin({ userId, password });
 
     if (!output[0]) return res.status(400).json({ message: "Invalid Email" });
-    if (!output[0].verify)
-      return res.status(400).json({
-        message: "You have to get an activation code to verify your account",
-      });
+
     const result = await bcrypt.compare(password, output[0].password);
     if (!result) return res.status(400).json({ message: "Invalid password" });
     console.log(output[0]);

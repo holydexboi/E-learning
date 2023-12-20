@@ -48,8 +48,6 @@ async function activateUser(req, res) {
       return res.status(400).json({ message: "Invalid activation code" });
     if (output[0].valid === 0)
       return res.status(400).json({ message: "Activation code has been used" });
-console.log(userId)
-    const user = await Users.update({ userId, code });
     res.json({ data: output, message: "User has been activated successfully" });
   } catch (error) {
     console.log(error);
