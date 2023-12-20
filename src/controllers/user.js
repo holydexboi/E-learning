@@ -4,27 +4,37 @@ const { customAlphabet, nanoid } = require("nanoid");
 const userIdentifier = customAlphabet("1234567890", 7);
 const jwt = require("jsonwebtoken");
 const Users = require("../models/user");
-const { activateUser } = require("../models/activation");
 
 Users.createTable();
 
 async function createUser(req, res) {
+  if (!req.body.firstName)
+    return res.status(400).json({ message: "First Name is not define" });
+  if (!req.body.lastName)
+    return res.status(400).json({ message: "Last Name is not define" });
+  if (!req.body.password)
+    return res.status(400).json({ message: "Password is not define" });
   if (!req.body.gender)
     return res.status(400).json({ message: "Gender is not define" });
   if (!req.body.location)
     return res.status(400).json({ message: "Location is not define" });
   if (!req.body.dob)
     return res.status(400).json({ message: "Date of Birth is not define" });
-  const { gender, dob, location } = req.body;
+
+  const salt = await bcrypt.genSalt(10);
+  const password = await bcrypt.hash(req.body.password, salt);
+  const { gender, dob, location, lastName, firstName } = req.body;
 
   try {
     const id = v4();
     const userId = userIdentifier();
-    const code = nanoid(6).toLowerCase();
     const user = await Users.createUser({
       id,
       userId,
-      code,
+      firstName,
+      lastName,
+      password,
+      code: "",
       dob,
       gender,
       location,
@@ -35,7 +45,7 @@ async function createUser(req, res) {
       .header("access-control-expose-headers", "x-auth-token")
       .json({
         message: "User account created Successfully",
-        data: { userId, code },
+        data: { userId },
       });
   } catch (err) {
     console.log("err", err.message);
@@ -65,9 +75,7 @@ async function createAdmin(req, res) {
       password,
       isAdmin: true,
     });
-    const token = jwt.sign(
-      { _id: userId, isAdmin: true },"unsecure"
-    );
+    const token = jwt.sign({ _id: userId, isAdmin: true }, "unsecure");
     res
       .header("x-auth-token", token)
       .header("access-control-expose-headers", "x-auth-token")
@@ -83,17 +91,24 @@ async function createAdmin(req, res) {
 
 async function login(req, res) {
   if (!req.body.userId)
-    return res.status(400).json({ message: "User is not define" });
-  if (!req.body.code)
-    return res.status(400).json({ message: "Activation Code is not define" });
-  const { userId, code } = req.body;
+    return res.status(400).json({ message: "UserId is not define" });
+  if (!req.body.password)
+    return res.status(400).json({ message: "Password is not define" });
+  const { userId, password } = req.body;
   try {
-  
-    const output = await Users.signin({userId, code})
+    const output = await Users.signin({ userId, password });
 
-    if (!output[0]) return res.status(400).json({ message: "Invalid Email or code" });
+    if (!output[0]) return res.status(400).json({ message: "Invalid Email" });
+    if (!output[0].verify)
+      return res.status(400).json({
+        message: "You have to get an activation code to verify your account",
+      });
+    const result = await bcrypt.compare(password, output[0].password);
+    if (!result) return res.status(400).json({ message: "Invalid password" });
+    console.log(output[0]);
     const token = jwt.sign(
-      { _id: output[0].userId, isAdmin: output[0].isAdmin },"unsecure"
+      { _id: output[0].userId, isAdmin: true },
+      "unsecure"
     );
 
     res.json({ token, ...output[0] });
@@ -101,7 +116,7 @@ async function login(req, res) {
     console.log(err);
     res.status(500).json({
       message: "Internal Error",
-      error: err,
+      error: err.message,
     });
   }
 }
@@ -121,7 +136,8 @@ async function loginAdmin(req, res) {
     if (!result) return res.status(400).json({ message: "Invalid password" });
     console.log(output[0]);
     const token = jwt.sign(
-      { _id: output[0].userId, isAdmin: true },"unsecure"
+      { _id: output[0].userId, isAdmin: true },
+      "unsecure"
     );
 
     res.json({ token, ...output[0] });

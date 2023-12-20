@@ -13,6 +13,7 @@ async function createTable() {
               table.unique("userId");
               table.string("password");
               table.string("code");
+              table.boolean("verify").defaultTo(false);
               table.string("firstName");
               table.string("lastName");
               table.string("location");
@@ -59,13 +60,13 @@ async function createAdmin(user) {
 async function signin(user) {
   try {
     const output = await knex("users")
-      .where({ userId: user.userId, code: user.code })
+      .where({ userId: user.userId })
       .select(
         "id",
         "userId",
         "firstName",
         "lastName",
-        "code",
+        "password",
         "gender",
         "grade",
         "isAdmin",
@@ -147,6 +148,7 @@ async function update(user) {
         "userId",
         "password",
         "firstName",
+        "code",
         "lastName",
         "gender",
         "grade",
@@ -156,11 +158,13 @@ async function update(user) {
 
     if (!output[0]) return output;
     console.log(output);
-    const firstName = !user.firstName ? output.firstName : user.firstName;
+    const firstName = !user.firstName ? output[0].firstName : user.firstName;
 
-    const lastName = !user.lastName ? output.lastName : user.lastName;
+    const lastName = !user.lastName ? output[0].lastName : user.lastName;
 
-    const password = user.password === "" ? output.password : user.password;
+    const password = user.password === "" ? output[0].password : user.password;
+
+    const code = user.code === "" ? output[0].code : user.code;
 
     const grade = !user.grade ? output.grade : user.grade;
     const profilePic = !user.profilePic ? output.profilePic : user.profilePic;
@@ -170,11 +174,13 @@ async function update(user) {
         firstName,
         lastName,
         password,
+        code,
+        verify: true,
         grade,
         profilePic,
       });
     console.log(response);
-    return [{ firstName, lastName, password, grade, profilePic }];
+    return [{ firstName, lastName, password, grade, profilePic, code }];
   } catch (err) {
     throw new Error(err);
   }
