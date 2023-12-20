@@ -30,7 +30,7 @@ async function createUser(req, res) {
       gender,
       location,
     });
-    const token = jwt.sign({ _id: userId }, config.get("jwtPrivateKey"));
+    const token = jwt.sign({ _id: userId }, "unsecure");
     res
       .header("x-auth-token", token)
       .header("access-control-expose-headers", "x-auth-token")
@@ -67,8 +67,7 @@ async function createAdmin(req, res) {
       isAdmin: true,
     });
     const token = jwt.sign(
-      { _id: userId, isAdmin: true },
-      config.get("jwtPrivateKey")
+      { _id: userId, isAdmin: true },"unsecure"
     );
     res
       .header("x-auth-token", token)
@@ -95,8 +94,7 @@ async function login(req, res) {
 
     if (!output[0]) return res.status(400).json({ message: "Invalid Email or code" });
     const token = jwt.sign(
-      { _id: output[0].userId, isAdmin: output[0].isAdmin },
-      config.get("jwtPrivateKey")
+      { _id: output[0].userId, isAdmin: output[0].isAdmin },"unsecure"
     );
 
     res.json({ token, ...output[0] });
@@ -124,8 +122,7 @@ async function loginAdmin(req, res) {
     if (!result) return res.status(400).json({ message: "Invalid password" });
     console.log(output[0]);
     const token = jwt.sign(
-      { _id: output[0].userId, isAdmin: true },
-      config.get("jwtPrivateKey")
+      { _id: output[0].userId, isAdmin: true },"unsecure"
     );
 
     res.json({ token, ...output[0] });

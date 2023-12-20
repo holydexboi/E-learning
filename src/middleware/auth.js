@@ -8,7 +8,7 @@ function auth(req, res, next) {
     
     try {
         
-        const decoded = jwt.decode(token, config.get('jwtPrivateKey'))
+        const decoded = jwt.decode(token, "unsecure")
         req.user = decoded
         next()
     }
