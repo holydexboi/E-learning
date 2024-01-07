@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const winston = require("winston");
+const path = require('path');
 const fileupload = require("express-fileupload");
 require("express-async-errors");
 const error = require("./middleware/error");
@@ -8,7 +9,8 @@ const error = require("./middleware/error");
 const app = express();
 
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use(express.static(__dirname));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/images", express.static("images"));
 
 app.use(express.urlencoded({ extended: true }));
