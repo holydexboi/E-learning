@@ -8,7 +8,7 @@ DATABASE='elearning'
 echo "Pulling Database: This may take a few minutes"
 
 # Set the folder where the database backup will be stored
-backupfolder=/root/Projects/E-learning/uploads/images
+backupfolder=/root/Projects/E-learning/backup
 
 sqlfile=$backupfolder/elearrning.sql
 zipfile=$backupfolder/elearning.gz
