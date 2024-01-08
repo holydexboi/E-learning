@@ -9,6 +9,7 @@ const app = express();
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+app.use("/backup", express.static("backup"));
 app.use("/images", express.static("images"));
 
 app.use(express.urlencoded({ extended: true }));
