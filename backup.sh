@@ -8,7 +8,7 @@ DATABASE='elearning'
 echo "Pulling Database: This may take a few minutes"
 
 # Set the folder where the database backup will be stored
-backupfolder=/root/Projects/E-learning/uploads
+backupfolder=/root/Projects/E-learning/uploads/images
 
 sqlfile=$backupfolder/elearrning.sql
 zipfile=$backupfolder/elearning.gz
@@ -22,7 +22,7 @@ if mysqldump  $DATABASE > $sqlfile ; then
         echo 'Error compressing backupBackup was not created!' 
         exit
     fi
-    rm $sqlfile 
+   # rm $sqlfile 
 else
    echo 'pg_dump return non-zero code No backup was created!' 
    exit
