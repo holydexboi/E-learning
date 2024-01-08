@@ -69,7 +69,6 @@ async function signin(user) {
         "password",
         "gender",
         "grade",
-        "isAdmin",
         "location",
         "profilePic",
         "dob"

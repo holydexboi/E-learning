@@ -47,6 +47,20 @@ async function createLesson(req, res) {
       }
     });
   }
+
+  let doc = "/uploads/documents/";
+  const pdfFile = req.files?.doc;
+  if (pdfFile) {
+    const type = pdfFile.mimetype.split("/")[1];
+    doc += nanoid() + "." + type;
+    pic.mv("." + doc, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
   const { name, course, description, instructorName, duration } = req.body;
 
   try {
@@ -56,6 +70,7 @@ async function createLesson(req, res) {
       name,
       course,
       video,
+      doc,
       description,
       instructorName,
       duration: parseFloat(duration),
@@ -152,12 +167,27 @@ async function updateLesson(req, res) {
       }
     });
   }
+
+  let doc = "/uploads/documents/";
+  const pdfFile = req.files?.doc;
+  if (pdfFile) {
+    const type = pdfFile.mimetype.split("/")[1];
+    doc += nanoid() + "." + type;
+    file.mv("." + doc, (err) => {
+      if (err) {
+        res.status(400).json({ message: err });
+      } else {
+        console.log("File  uploadeded successfully");
+      }
+    });
+  }
   try {
     const output = await Lesson.updateLesson({
       id: lessonId,
       name,
       course,
       video,
+      doc,
       duration: parseFloat(duration),
       instructorName,
       instructorPic,
