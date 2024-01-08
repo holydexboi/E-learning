@@ -22,7 +22,7 @@ if mysqldump  $DATABASE > $sqlfile ; then
         echo 'Error compressing backupBackup was not created!' 
         exit
     fi
-   # rm $sqlfile 
+    rm $sqlfile 
 else
    echo 'pg_dump return non-zero code No backup was created!' 
    exit
