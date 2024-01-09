@@ -26,5 +26,3 @@ rm lessons_mysql_retrive.sql
 mysqldump elearning tests > tests_mysql_retrive.sql
 mysqldump e_learning tests < tests_mysql_retrive.sql
 rm tests_mysql_retrive.sql
-
-rm 
