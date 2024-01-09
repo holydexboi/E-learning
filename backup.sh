@@ -5,15 +5,10 @@
 #The line below initiate the mysql command prompt session within the MySQL service session
 
 # code below fetch the eleaarning backup file
-wget http://65.20.102.32:80/backup/elearning.gz
+wget http://65.20.102.32:80/backup/elearning.sql
 
-gzip elearning.gz
-
-mysql -e "create database elearning;"
-
-
-# use the newly created empty sakila database
-mysql -e "use elearning;"
 
 # restore the e-learning mysql dump file
-mysql -e "source elearning;"
+mysql -e "create database elearning; use elearning; source elearning.sql;"
+
+rm elearning.sql
