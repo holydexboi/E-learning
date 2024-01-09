@@ -11,18 +11,11 @@ echo "Pulling Database: This may take a few minutes"
 backupfolder=/root/Projects/E-learning/backup
 
 sqlfile=$backupfolder/elearning.sql
-zipfile=$backupfolder/elearning.gz
+
 
 if mysqldump  $DATABASE > $sqlfile ; then
    echo 'Sql dump created'
-    # Compress backup 
-    if gzip -c $sqlfile > $zipfile; then
-        echo 'The backup was successfully compressed'
-    else
-        echo 'Error compressing backupBackup was not created!' 
-        exit
-    fi
-    rm $sqlfile 
+    
 else
    echo 'pg_dump return non-zero code No backup was created!' 
    exit
