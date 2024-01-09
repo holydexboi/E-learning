@@ -10,7 +10,7 @@ echo "Pulling Database: This may take a few minutes"
 # Set the folder where the database backup will be stored
 backupfolder=/root/Projects/E-learning/backup
 
-uploadFolder=/root/Projects/E-learning/uploads
+uploadFolder=/uploads
 
 sqlfile=$backupfolder/elearning.sql
 
