@@ -77,6 +77,7 @@ async function getAvailableTests() {
         course: "lessons.course",
         topic: "lessons.name",
         grade: "grades.level",
+        banner: "courses.banner",
         subject: "subjects.title"
 
 
