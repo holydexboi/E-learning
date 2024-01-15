@@ -169,6 +169,8 @@ async function update(req, res) {
         console.log("File  uploadeded successfully");
       }
     });
+  }else{
+profilePic =null
   }
 
   try {

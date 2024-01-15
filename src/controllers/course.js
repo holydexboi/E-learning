@@ -26,6 +26,8 @@ async function createCourse(req, res) {
         console.log("File  uploadeded successfully");
       }
     });
+  }else{
+    banner = null
   }
   const { subject, grade } = req.body;
 
@@ -109,6 +111,9 @@ async function updateCourse(req, res) {
         console.log("File  uploadeded successfully");
       }
     });
+  }
+  else{
+    banner = null
   }
   try {
     const output = await Course.updateCourse({

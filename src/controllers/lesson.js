@@ -46,6 +46,8 @@ async function createLesson(req, res) {
         console.log("File  uploadeded successfully");
       }
     });
+  }else {
+    instructorPic = null
   }
 
   let doc = "/uploads/documents/";
@@ -60,6 +62,9 @@ async function createLesson(req, res) {
         console.log("File  uploadeded successfully");
       }
     });
+  }
+  else{
+    doc = null
   }
   const { name, course, description, instructorName, duration } = req.body;
 
@@ -153,6 +158,9 @@ async function updateLesson(req, res) {
       }
     });
   }
+  else{
+    video = null
+  }
 
   let instructorPic = "/uploads/images/instructor/";
   const pic = req.files?.instructorPic;
@@ -167,6 +175,9 @@ async function updateLesson(req, res) {
       }
     });
   }
+  else{
+  instructorPic = null
+  }
 
   let doc = "/uploads/documents/";
   const pdfFile = req.files?.doc;
@@ -180,6 +191,8 @@ async function updateLesson(req, res) {
         console.log("File  uploadeded successfully");
       }
     });
+  }else{
+    doc = null
   }
   try {
     const output = await Lesson.updateLesson({
