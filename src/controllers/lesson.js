@@ -55,7 +55,7 @@ async function createLesson(req, res) {
   if (pdfFile) {
     const type = pdfFile.mimetype.split("/")[1];
     doc += nanoid() + "." + type;
-    pic.mv("." + doc, (err) => {
+    pdfFile.mv("." + doc, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {
@@ -184,7 +184,7 @@ async function updateLesson(req, res) {
   if (pdfFile) {
     const type = pdfFile.mimetype.split("/")[1];
     doc += nanoid() + "." + type;
-    file.mv("." + doc, (err) => {
+    pdfFile.mv("." + doc, (err) => {
       if (err) {
         res.status(400).json({ message: err });
       } else {
