@@ -195,10 +195,40 @@ profilePic =null
   }
 }
 
+async function updateLocation(req, res) {
+  if (!req.body.longitude)
+    return res.status(400).json({ message: "Longitude is not define" });
+  if (!req.body.latitude)
+    return res.status(400).json({ message: "Latitude is not define" });
+  const userId = req.user._id;
+  const longitude = req.body?.longitude;
+  const latitude = req.body?.latitude;
+
+
+  try {
+    const output = await Users.getLocation({
+      userId,
+      longitude,
+      latitude
+    });
+
+    if (!output[0]) return res.status(400).json({ message: "Invalid userId" });
+
+    res.json({ ...output[0] });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Internal Error",
+      error: err,
+    });
+  }
+}
+
 module.exports = {
   createUser,
   login,
   update,
   createAdmin,
   loginAdmin,
+  updateLocation,
 };

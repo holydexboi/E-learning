@@ -8,5 +8,6 @@ module.exports = (app) => {
   router.post("/user/login/admin", user.loginAdmin);
   router.post("/user/login", user.login);
   router.put("/user/update/profile", auth, user.update)
+  router.put("/user/update/location", auth, user.updateLocation)
   app.use("/api", router);
 };

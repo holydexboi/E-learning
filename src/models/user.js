@@ -24,6 +24,8 @@ async function createTable() {
               table.string("grade");
               table.foreign("grade").references("id").inTable("grades");
               table.string("profilePic");
+              table.string("latitude");
+              table.string("longitude");
               table
                 .timestamp("created_at", { precision: 6 })
                 .defaultTo(knex.fn.now(6));
@@ -185,6 +187,43 @@ async function update(user) {
   }
 }
 
+async function getLocation(location) {
+  try {
+    const output = await knex("users")
+      .where({ userId: location.userId })
+      .select(
+        "id",
+        "userId",
+        "password",
+        "firstName",
+        "code",
+        "lastName",
+        "gender",
+        "grade",
+        "profilePic",
+        "dob",
+        "latitude",
+        "longitude"
+      );
+
+    if (!output[0]) return output;
+    console.log(output);
+    const latitude = !location.latitude ? output[0].latitude : location.latitude;
+
+    const longitude = !location.longitude ? output[0].longitude : location.longitude;
+    const response = await knex("users")
+      .where("userId", "=", location.userId)
+      .update({
+        longitude,
+        latitude
+      });
+    console.log(response);
+    return [{ longitude, latitude }];
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
 module.exports = {
   createTable,
   createUser,
@@ -194,4 +233,5 @@ module.exports = {
   signinAdmin,
   getStudents,
   getStudentsCount,
+  getLocation
 };
