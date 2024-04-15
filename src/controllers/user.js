@@ -147,6 +147,22 @@ async function loginAdmin(req, res) {
   }
 }
 
+
+async function studentsLocation(req, res) {
+  
+  try {
+    const output = await Users.getStudentsLocation();
+
+    res.json([...output]);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Internal Error",
+      error: err,
+    });
+  }
+}
+
 async function update(req, res) {
   const salt = await bcrypt.genSalt(10);
   const userId = req.user._id;
@@ -231,4 +247,5 @@ module.exports = {
   createAdmin,
   loginAdmin,
   updateLocation,
+  studentsLocation
 };

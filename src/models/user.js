@@ -130,6 +130,21 @@ async function getStudents() {
   }
 }
 
+async function getStudentsLocation() {
+  try {
+    const output = await knex("users").select(
+      "id",
+      "userId",
+      "latitude",
+      "longitude"
+    );
+
+    return output;
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
 async function getStudentsCount() {
   try {
     const output = await knex("users").count().where({ isAdmin: 0 });
@@ -233,5 +248,6 @@ module.exports = {
   signinAdmin,
   getStudents,
   getStudentsCount,
-  getLocation
+  getLocation,
+  getStudentsLocation
 };

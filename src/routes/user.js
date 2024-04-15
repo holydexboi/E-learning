@@ -9,5 +9,6 @@ module.exports = (app) => {
   router.post("/user/login", user.login);
   router.put("/user/update/profile", auth, user.update)
   router.put("/user/update/location", auth, user.updateLocation)
+  router.get("/user/locations", auth, user.studentsLocation)
   app.use("/api", router);
 };
